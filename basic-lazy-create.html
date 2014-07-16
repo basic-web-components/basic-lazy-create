@@ -1,0 +1,43 @@
+<link rel="import" href="../basic-element/basic-element.html">
+
+<polymer-element name="basic-lazy-create" attributes="create" extends="basic-element">
+
+<script>
+Polymer( "basic-lazy-create", {
+
+  createChanged: function() {
+    this.async( this._refresh, null, 1 );
+  },
+
+  contentChanged: function() {
+    this.async( this._refresh, null, 1 );
+  },
+
+  _refresh: function() {
+    var componentName = this.create;
+    if ( componentName == null ) {
+      return;
+    }
+    var children = this.flattenChildren;
+    children.forEach( function( child ) {
+      // this.async( this._createWithNode, [ child, componentName ], 1 );
+      this._createWithNode( child, componentName );
+    }.bind( this ));
+  },
+
+  _createWithNode: function( node, componentName ) {
+    if ( node.parentNode !== this || node.localName === componentName ) {
+      // Routine was called on a node that's already been replaced.
+      return;
+    }
+    var newNode = document.createElement( componentName );
+    Array.prototype.forEach.call( node.childNodes, function( child ) {
+      newNode.appendChild( child );
+    });
+    this.replaceChild( newNode, node );
+  }
+  
+});
+</script>
+
+</polymer-element>
