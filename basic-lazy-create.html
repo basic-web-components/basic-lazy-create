@@ -1,3 +1,15 @@
+<!--
+Lazily creates component instances for each of its children.
+
+NOTE: This component is currently just an experiment. The goal is try to create
+a way to deliver better page load performance on polyfilled browsers for pages
+with long lists of components. Rather than upgrade those components on page
+load, the goal of this component is to defer upgrade of its children until after
+the overall page has had a chance to render. Unfortunately, the current approach
+is too slow, and for polyfilled browsers is worse than letting upgrade happen
+automatically.
+-->
+
 <link rel="import" href="../basic-element/basic-element.html">
 
 <polymer-element name="basic-lazy-create" attributes="create" extends="basic-element">
@@ -20,7 +32,6 @@ Polymer( "basic-lazy-create", {
     }
     var children = this.flattenChildren;
     children.forEach( function( child ) {
-      // this.async( this._createWithNode, [ child, componentName ], 1 );
       this._createWithNode( child, componentName );
     }.bind( this ));
   },
