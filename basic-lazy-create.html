@@ -30,17 +30,27 @@ Polymer( "basic-lazy-create", {
     if ( componentName == null ) {
       return;
     }
+    this._createBatch( componentName );
+  },
+
+  _createBatch: function( componentName ) {
     var children = this.flattenChildren;
-    children.forEach( function( child ) {
-      this._createWithNode( child, componentName );
+    var batch = children.filter( function( child ) {
+      return ( child.parentNode === this && child.localName !== componentName );
     }.bind( this ));
+    var batchSize = 50;
+    batch = batch.slice( 0, batchSize );
+    if ( batch.length > 0 ) {
+      batch.forEach( function( child ) {
+        this._createWithNode( child, componentName );
+      }.bind( this ));
+      setTimeout( function() {
+        this._createBatch( componentName );
+      }.bind( this ), 10000 );
+    }
   },
 
   _createWithNode: function( node, componentName ) {
-    if ( node.parentNode !== this || node.localName === componentName ) {
-      // Routine was called on a node that's already been replaced.
-      return;
-    }
     var newNode = document.createElement( componentName );
     Array.prototype.forEach.call( node.childNodes, function( child ) {
       newNode.appendChild( child );
