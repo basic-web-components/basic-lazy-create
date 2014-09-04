@@ -15,7 +15,7 @@ automatically.
 <polymer-element name="basic-lazy-create" attributes="create" extends="basic-element">
 
 <script>
-Polymer( "basic-lazy-create", {
+Polymer({
 
   createChanged: function() {
     this.async( this._refresh, null, 1 );
